@@ -39,6 +39,72 @@ test.describe('NF Monitor - Cadastro Sequencial (App Aberto)', () => {
     await menuDiretorios.click();
     await page.waitForTimeout(3000);
     
+    console.log('🧹 ================ LIMPEZA INICIAL ================');
+    console.log('');
+    console.log('🔍 Verificando se existem diretórios cadastrados...');
+    
+    // LIMPEZA AUTOMÁTICA DOS DIRETÓRIOS EXISTENTES
+    let tentativasLimpeza = 0;
+    const maxTentativas = 10;
+    
+    while (tentativasLimpeza < maxTentativas) {
+      // Procura por botões de exclusão (podem ter várias classes diferentes)
+      const botoesExclusao = page.locator('button[class*="bg-red"], button[title*="excluir"], button[title*="remover"], button[title*="delete"], .bg-red-500, .bg-red-600, [data-testid*="delete"], [data-testid*="remove"], table button:has-text("🗑"), table button:has-text("❌"), table button:has-text("X")');
+      
+      const count = await botoesExclusao.count();
+      
+      if (count === 0) {
+        console.log('✅ Não há diretórios para remover - prosseguindo');
+        break;
+      }
+      
+      console.log(`🗑️ Encontrados ${count} botão(ões) de exclusão - removendo...`);
+      
+      // Remove um por vez para evitar problemas de sincronização
+      for (let i = 0; i < count; i++) {
+        const botao = botoesExclusao.nth(0); // Sempre pega o primeiro
+        if (await botao.isVisible()) {
+          console.log(`   🗑️ Removendo item ${i + 1}/${count}...`);
+          await botao.click();
+          await page.waitForTimeout(1000);
+          
+          // Verifica se aparece confirmação
+          const confirmacoes = page.locator('button:has-text("Confirmar"), button:has-text("Sim"), button:has-text("OK"), button:has-text("Delete"), button:has-text("Remove")');
+          if (await confirmacoes.isVisible({ timeout: 2000 })) {
+            await confirmacoes.first().click();
+            await page.waitForTimeout(500);
+          }
+          
+          await page.waitForTimeout(1000);
+          break; // Sai do loop e reconta
+        }
+      }
+      
+      tentativasLimpeza++;
+    }
+    
+    // Verifica estado após limpeza
+    const tabelaNotas = page.locator('table').first();
+    const tabelaDocumentos = page.locator('table').nth(1);
+    
+    const dadosNotasInicial = await tabelaNotas.locator('tbody tr, tr:not(:first-child)').count();
+    const dadosDocumentosInicial = await tabelaDocumentos.locator('tbody tr, tr:not(:first-child)').count();
+    
+    console.log(`📊 Estado após limpeza:`);
+    console.log(`   📁 Notas: ${dadosNotasInicial} diretório(s)`);
+    console.log(`   📄 Documentos: ${dadosDocumentosInicial} diretório(s)`);
+    console.log('');
+    
+    if (dadosNotasInicial > 0 || dadosDocumentosInicial > 0) {
+      console.log('⚠️ AVISO: Ainda restam diretórios após limpeza automática');
+      console.log('🖱️ Se necessário, remova manualmente antes de prosseguir');
+      console.log('⏰ Pausa de 10 segundos para limpeza manual...');
+      await page.waitForTimeout(10000);
+    } else {
+      console.log('✅ Limpeza completa - tabelas vazias');
+    }
+    
+    console.log('');
     console.log('🎯 ============== CADASTRO SEQUENCIAL (APP ABERTO) ==============');
     console.log('');
     console.log('📋 ESTRATÉGIA: Manter aplicativo aberto durante todo o processo');
@@ -64,8 +130,8 @@ test.describe('NF Monitor - Cadastro Sequencial (App Aberto)', () => {
       await expect(botaoNotas).toBeVisible();
       await botaoNotas.click();
       
-      console.log('⏳ Aguardando seleção (30s)...');
-      await page.waitForTimeout(30000);
+      console.log('⏳ Aguardando seleção (10s)...');
+      await page.waitForTimeout(10000);
       console.log('✅ Notas cadastrado!');
       console.log('');
       
@@ -83,8 +149,8 @@ test.describe('NF Monitor - Cadastro Sequencial (App Aberto)', () => {
       await expect(botaoDocumentos).toBeVisible();
       await botaoDocumentos.click();
       
-      console.log('⏳ Aguardando seleção (30s)...');
-      await page.waitForTimeout(30000);
+      console.log('⏳ Aguardando seleção (10s)...');
+      await page.waitForTimeout(10000);
       console.log('✅ Certificados (2) cadastrado!');
       console.log('');
       
@@ -101,8 +167,8 @@ test.describe('NF Monitor - Cadastro Sequencial (App Aberto)', () => {
       // Mesmo botão de documentos
       await botaoDocumentos.click();
       
-      console.log('⏳ Aguardando seleção (30s)...');
-      await page.waitForTimeout(30000);
+      console.log('⏳ Aguardando seleção (10s)...');
+      await page.waitForTimeout(10000);
       console.log('✅ CertificadoV3 cadastrado!');
       console.log('');
       
