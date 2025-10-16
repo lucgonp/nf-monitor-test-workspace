@@ -1,0 +1,160 @@
+<!-- EXEMPLO: Como adicionar data-testids na sua UI para testes de bandeja e NFE -->
+
+<!-- 1. ÍCONE NFE na lista/grid -->
+<div data-testid="icone-nfe" class="nfe-item" onclick="selecionarNFE()">
+  <img src="nfe-icon.png" alt="NFE" />
+  <span>nota_fiscal_123.xml</span>
+</div>
+
+<!-- 2. MENU DE CONTEXTO para NFE (clique direito) -->
+<div data-testid="menu-contexto-nfe" class="context-menu" style="display: none;">
+  <button data-testid="opcao-visualizar" onclick="visualizarNFE()">
+    📄 Visualizar NFE
+  </button>
+  <button data-testid="opcao-reenviar" onclick="reenviarNFE()">
+    🔄 Reenviar
+  </button>
+  <button data-testid="opcao-excluir" onclick="excluirNFE()">
+    🗑️ Excluir
+  </button>
+</div>
+
+<!-- 3. HISTÓRICO DE EXECUÇÕES -->
+<div data-testid="historico-execucoes" class="historico">
+  <h3>Histórico de Execuções</h3>
+  <div data-testid="item-historico" class="historico-item">
+    <span>nota_123.xml</span>
+    <span class="timestamp">16/10/2025 14:30:15</span>
+    <span class="status success">✅ Enviado</span>
+  </div>
+</div>
+
+<!-- 4. BOTÃO LIMPAR HISTÓRICO -->
+<button data-testid="btn-limpar-historico" onclick="limparHistorico()">
+  🗑️ Limpar Histórico
+</button>
+
+<!-- 5. INDICADOR DE STATUS DA BANDEJA -->
+<div data-testid="status-bandeja" class="tray-status">
+  <span data-testid="icone-bandeja">📎</span>
+  <span data-testid="status-texto">Monitor Ativo</span>
+</div>
+
+<!-- 6. NOTIFICAÇÕES -->
+<div data-testid="notificacao" class="notification" style="display: none;">
+  <span data-testid="notificacao-titulo">NFE Processada</span>
+  <span data-testid="notificacao-conteudo">nota_123.xml enviada com sucesso</span>
+</div>
+
+<!-- 7. CONFIGURAÇÕES -->
+<div data-testid="configuracoes" class="settings">
+  <h3>Configurações</h3>
+  <label>
+    <input type="checkbox" data-testid="auto-start" /> Iniciar com Windows
+  </label>
+  <label>
+    <input type="checkbox" data-testid="minimize-to-tray" /> Minimizar para bandeja
+  </label>
+</div>
+
+<script>
+// JAVASCRIPT: Funções para testar interações
+
+function selecionarNFE() {
+  // Seleciona NFE e mostra detalhes
+  console.log('NFE selecionada');
+}
+
+function mostrarMenuContexto(event) {
+  event.preventDefault();
+  const menu = document.querySelector('[data-testid="menu-contexto-nfe"]');
+  menu.style.display = 'block';
+  menu.style.left = event.pageX + 'px';
+  menu.style.top = event.pageY + 'px';
+}
+
+function visualizarNFE() {
+  console.log('Visualizando NFE');
+  // Implementar visualização
+}
+
+function reenviarNFE() {
+  console.log('Reenviando NFE');
+  // Implementar reenvio
+}
+
+function limparHistorico() {
+  if (confirm('Confirma limpar histórico?')) {
+    const historico = document.querySelector('[data-testid="historico-execucoes"]');
+    historico.innerHTML = '<h3>Histórico de Execuções</h3><p>Nenhum item no histórico</p>';
+  }
+}
+
+// EVENTOS IPC para comunicação com main process
+const { ipcRenderer } = require('electron');
+
+// Escuta eventos da bandeja
+ipcRenderer.on('tray-click', () => {
+  console.log('Clique na bandeja detectado');
+  // Atualizar UI conforme necessário
+});
+
+ipcRenderer.on('tray-right-click', () => {
+  console.log('Clique direito na bandeja detectado');
+  // Mostrar menu ou ação específica
+});
+
+ipcRenderer.on('nfe-processada', (event, dados) => {
+  console.log('NFE processada:', dados);
+  mostrarNotificacao(`${dados.arquivo} processada com sucesso`);
+});
+
+function mostrarNotificacao(mensagem) {
+  const notif = document.querySelector('[data-testid="notificacao"]');
+  const conteudo = document.querySelector('[data-testid="notificacao-conteudo"]');
+  conteudo.textContent = mensagem;
+  notif.style.display = 'block';
+  
+  setTimeout(() => {
+    notif.style.display = 'none';
+  }, 3000);
+}
+
+// Adicionar event listeners
+document.addEventListener('DOMContentLoaded', () => {
+  // Clique direito no ícone NFE
+  const iconesNFE = document.querySelectorAll('[data-testid="icone-nfe"]');
+  iconesNFE.forEach(icone => {
+    icone.addEventListener('contextmenu', mostrarMenuContexto);
+  });
+  
+  // Fechar menu ao clicar fora
+  document.addEventListener('click', () => {
+    const menu = document.querySelector('[data-testid="menu-contexto-nfe"]');
+    menu.style.display = 'none';
+  });
+});
+</script>
+
+<!-- 
+COMO USAR NOS TESTES PLAYWRIGHT:
+
+// Clique no ícone NFE
+await page.locator('[data-testid="icone-nfe"]').click();
+
+// Clique direito para menu contexto
+await page.locator('[data-testid="icone-nfe"]').click({ button: 'right' });
+
+// Verificar se menu apareceu
+await expect(page.locator('[data-testid="menu-contexto-nfe"]')).toBeVisible();
+
+// Clicar em opção do menu
+await page.locator('[data-testid="opcao-visualizar"]').click();
+
+// Verificar histórico
+await expect(page.locator('[data-testid="historico-execucoes"]')).toContainText('nota_123.xml');
+
+// Limpar histórico
+await page.locator('[data-testid="btn-limpar-historico"]').click();
+await page.getByText('Confirmar').click();
+-->

@@ -1,0 +1,39 @@
+{
+  "name": "nf-monitor-test-workspace",
+  "version": "1.0.0",
+  "description": "Test workspace for NF Monitor Electron application with comprehensive testing setup",
+  "main": "index.js",
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:exe": "playwright test tests/e2e/electron-real.spec.ts",
+    "test:e2e:exe:ui": "playwright test tests/e2e/electron-real.spec.ts --ui",
+    "test:e2e:basico": "playwright test tests/e2e/electron-basico.spec.ts",
+    "test:e2e:basico:ui": "playwright test tests/e2e/electron-basico.spec.ts --ui",
+    "test:cypress": "cypress run",
+    "test:cypress:open": "cypress open",
+    "test:unit": "vitest run",
+    "test:dev": "cross-env ELECTRON_TEST=1 vite"
+  },
+  "keywords": [
+    "electron",
+    "testing",
+    "playwright",
+    "cypress",
+    "vitest"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.47.0",
+    "@types/electron": "^1.6.10",
+    "@types/node": "^20.0.0",
+    "cross-env": "^7.0.3",
+    "cypress": "^13.0.0",
+    "electron": "^31.0.0",
+    "nock": "^13.5.0",
+    "node-fetch": "^3.3.2",
+    "typescript": "^5.0.0",
+    "vitest": "^1.6.0"
+  }
+}
