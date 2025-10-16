@@ -39,20 +39,17 @@ npx playwright install
 
 ## 🧪 **Executando os Testes**
 
-### **Testes Básicos (Recomendado para começar)**
+### **Testes E2E (Recomendado)**
 ```bash
 # Testes básicos que funcionam com qualquer executável
 npm run test:e2e:basico
 ```
 
-### **Testes Avançados (Requer integração)**
-```bash
-# Testes completos com IPC e funcionalidades específicas
-npm run test:e2e:exe
-```
-
 ### **Outros Testes**
 ```bash
+# Todos os testes E2E
+npm run test:e2e
+
 # Testes de unidade
 npm run test:unit
 
@@ -72,9 +69,7 @@ npm run test:e2e:basico:ui
 📦 nf-monitor-test-workspace
 ├── 📂 tests/
 │   └── 📂 e2e/
-│       ├── 📄 electron.spec.ts          # Testes demo
-│       ├── 📄 electron-basico.spec.ts   # Testes básicos (funciona com qualquer .exe)
-│       └── 📄 electron-real.spec.ts     # Testes avançados (precisa integração)
+│       └── 📄 electron-basico.spec.ts   # Testes básicos E2E
 ├── 📂 tests-integration/
 │   └── 📄 network.spec.ts               # Testes de API com mocks
 ├── 📂 cypress/
@@ -93,15 +88,7 @@ npm run test:e2e:basico:ui
 
 ## ⚙️ **Configuração para Seu App**
 
-### **1. Para Executável Real**
-
-Edite o caminho em `tests/e2e/electron-real.spec.ts`:
-
-```typescript
-let executablePath = 'C:\\Caminho\\Para\\Seu\\app.exe';
-```
-
-### **2. Para Integração Completa**
+### **1. Para Integração Completa**
 
 Adicione ao seu `main.ts` ou `main.js`:
 
@@ -112,7 +99,7 @@ if (process.env.ELECTRON_TEST === '1') {
 }
 ```
 
-### **3. Seletores de Teste**
+### **2. Seletores de Teste**
 
 Adicione `data-testid` nos seus elementos:
 
