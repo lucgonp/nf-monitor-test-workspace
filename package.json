@@ -11,6 +11,7 @@
     "test:e2e:menus": "playwright test tests/e2e/validacao-menus.spec.ts",
     "test:e2e:menus:ui": "playwright test tests/e2e/validacao-menus.spec.ts --ui",
     "test:e2e:sequencial": "playwright test tests/e2e/cadastro-sequencial.spec.ts",
+    "test:e2e:envio": "playwright test tests/e2e/envio-notas-completo.spec.ts --headed",
     "test:e2e:debug-menu": "playwright test tests/e2e/debug-menu-ativo.spec.ts",
     "test:e2e:debug-menu:ui": "playwright test tests/e2e/debug-menu-ativo.spec.ts --ui",
     "test:cypress": "cypress run",

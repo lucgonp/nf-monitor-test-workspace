@@ -110,7 +110,7 @@ test.describe('NF Monitor - Cadastro Sequencial (App Aberto)', () => {
     console.log('📋 ESTRATÉGIA: Manter aplicativo aberto durante todo o processo');
     console.log('');
     console.log('📂 Sequência de cadastro:');
-    console.log('   1️⃣ notas → Tabela NOTAS');
+    console.log('   1️⃣ NotasParaTesteMonitor → Tabela NOTAS');
     console.log('   2️⃣ Certificados (2) → Tabela DOCUMENTOS'); 
     console.log('   3️⃣ certificadoV3 → Tabela DOCUMENTOS');
     console.log('');
@@ -123,7 +123,7 @@ test.describe('NF Monitor - Cadastro Sequencial (App Aberto)', () => {
     try {
       // PASSO 1: Cadastra NOTAS
       console.log('1️⃣ CADASTRANDO NOTAS...');
-      console.log('📂 Selecione: C:/Users/New User/Downloads/notas');
+      console.log('📂 Selecione: C:\\Users\\New User\\Documents\\NotasParaTesteMonitor');
       console.log('🎯 Deve ir para tabela de NOTAS');
       
       const botaoNotas = page.getByText('Selecionar diretórios para envio de notas');
